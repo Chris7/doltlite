@@ -11,6 +11,7 @@ GATING=(
   invariant_test
   three_way_diff_test
   concurrent_stress_test
+  objectstorevfs_concurrent_stress_test
   vc_concurrency_test
   vc_ref_mutation_stress_test
   multi_process_test

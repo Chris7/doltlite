@@ -2674,6 +2674,7 @@ DOLTLITE_C_TESTS = \
 	sql_transaction_test$(T.exe) \
 	cross_branch_test$(T.exe) \
 	concurrent_stress_test$(T.exe) \
+	objectstorevfs_concurrent_stress_test$(T.exe) \
 	vc_concurrency_test$(T.exe) \
 	vc_ref_mutation_stress_test$(T.exe) \
 	multi_process_test$(T.exe) \
@@ -2702,6 +2703,11 @@ cross_branch_test$(T.exe): $(TOP)/test/cross_branch_test.c libdoltlite$(T.lib)
 
 concurrent_stress_test$(T.exe): $(TOP)/test/concurrent_stress_test.c libdoltlite$(T.lib)
 	$(T.link) -I. -I$(TOP)/src -o $@ $(TOP)/test/concurrent_stress_test.c \
+		libdoltlite$(T.lib) -lz -lpthread -lm
+
+objectstorevfs_concurrent_stress_test$(T.exe): $(TOP)/test/objectstorevfs_concurrent_stress.c $(TOP)/ext/misc/objectstorevfs.c libdoltlite$(T.lib)
+	$(T.link) -DSQLITE_CORE -I. -I$(TOP)/src -o $@ \
+		$(TOP)/test/objectstorevfs_concurrent_stress.c $(TOP)/ext/misc/objectstorevfs.c \
 		libdoltlite$(T.lib) -lz -lpthread -lm
 
 vc_concurrency_test$(T.exe): $(TOP)/test/vc_concurrency_test.c libdoltlite$(T.lib)

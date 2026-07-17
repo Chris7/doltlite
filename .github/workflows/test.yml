@@ -33,6 +33,37 @@ jobs:
         DOLTLITE_STRESS_SECONDS=480 ./concurrent_stress_test
       timeout-minutes: 9
 
+  objectstorevfs-concurrency-stress:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Configure
+      run: |
+        mkdir -p build && cd build
+        TCL_CONFIG=$(find /usr -path '/usr/share/miniconda/*' -prune -o -name tclConfig.sh -print 2>/dev/null | head -1)
+        if [ -n "$TCL_CONFIG" ]; then
+          ../configure --with-tcl=$(dirname $TCL_CONFIG)
+        else
+          ../configure
+        fi
+
+    - name: Build object-store VFS concurrency stress
+      run: |
+        cd build
+        make DOLTLITE_PROLLY_CHECK=1 objectstorevfs_concurrent_stress_test
+      timeout-minutes: 5
+
+    - name: Run object-store VFS concurrency stress
+      run: |
+        cd build
+        for i in $(seq 1 12); do
+          ./objectstorevfs_concurrent_stress_test "/tmp/objectstorevfs-concurrency-$i.db"
+        done
+      timeout-minutes: 9
+
   vc-concurrency-stress:
     runs-on: ubuntu-latest
     timeout-minutes: 20
